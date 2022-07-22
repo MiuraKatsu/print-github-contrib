@@ -5,6 +5,7 @@ import (
 	"github.com/google/go-github/v32/github"
 	"go.uber.org/zap"
 	"time"
+    "golang.org/x/oauth2"
 )
 
 type Client struct {
@@ -14,8 +15,15 @@ type Client struct {
 }
 
 func NewClient(logger *zap.Logger, sleep time.Duration) *Client {
+
+        ctx := context.Background()
+	    ts := oauth2.StaticTokenSource(
+		    &oauth2.Token{AccessToken: "your_acccess_token"},
+	    )
+	    tc := oauth2.NewClient(ctx, ts)
+
 	return &Client{
-		client: github.NewClient(nil),
+		client: github.NewClient(tc),
 		logger: logger,
 		sleep:  sleep,
 	}
